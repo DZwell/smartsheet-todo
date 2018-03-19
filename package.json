@@ -1,0 +1,22 @@
+{
+  "name": "smartsheet-todo",
+  "version": "1.0.0",
+  "description": "Smartsheet to do list",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DZwell/smartsheet-todo.git"
+  },
+  "author": "Daniel Zwelling",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DZwell/smartsheet-todo/issues"
+  },
+  "homepage": "https://github.com/DZwell/smartsheet-todo#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
