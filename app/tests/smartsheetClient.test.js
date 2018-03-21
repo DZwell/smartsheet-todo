@@ -7,13 +7,13 @@ const objectUnderTest = require('../smartsheetClient');
 describe('Smartsheet client', () => {
     const dummySheetId = 'dummyId';
 
-    describe('#getSheet', async () => {
-        it('should call smartsheet.getSheet with provided args', () => {
+    describe('#getSheet', () => {
+        it('should call smartsheet.getSheet with provided args', async () => {
             /* arrange */
             const getSheetMock = sinon.mock(smartsheet, 'getSheet').expects({ id: dummySheetId });
 
             /* act */
-            objectUnderTest.getSheet();
+            await objectUnderTest.getSheet();
 
             /* assert */
             getSheetMock.verify();

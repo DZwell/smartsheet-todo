@@ -31,14 +31,12 @@ function mapColumnNameToId(columns) {
  * @param {Object} task
  */
 function buildRowObjectFromTask(task) {
-    const row = { toTop: true };
+    const row = { toBottom: true };
 
-    const cells = Object.keys(task).map(taskProp => ({
+    row.cells = Object.keys(task).map(taskProp => ({
         columnId: columnMap[taskProp],
         value: task[taskProp],
     }));
-
-    row.cells = cells;
 
     return row;
 }
@@ -47,6 +45,7 @@ async function getSheet() {
     try {
         const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
         mapColumnNameToId(sheet.columns);
+
         return sheet;
     } catch (err) {
         throw new Error(err.message);
@@ -63,18 +62,23 @@ async function addTask(task) {
             body: row,
         };
 
-        await smartsheet.sheets.addRows(options);
+        const result = await smartsheet.sheets.addRows(options);
+        console.log(result);
     } catch (err) {
         console.log(err);
     }
 }
 
 const hey = {
-    body: 'some modfdre text',
-    status: 'not df',
-    category: 'dfdf list',
-    dueDate: 'adf',
+    body: 'BRAND NEW',
+    status: 'DOOONE',
+    category: 'MY category',
+    dueDate: 'tomorrow, fooaaaaaaaaa',
 };
 
 addTask(hey);
-
+// smartsheet.sheets.getSheet({ id: sheetId }).then((sheet) => {
+//     console.log(sheet.rows);
+// }).catch((err) => {
+//     console.log(err);
+// });
