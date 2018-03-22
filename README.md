@@ -1,1 +1,1 @@
-A simple CRUD app that utilizes [https://www.smartsheet.com/](Smartsheet) as the data store
+A simple CRUD app that utilizes [Smartsheet](https://www.smartsheet.com/) as the data store
