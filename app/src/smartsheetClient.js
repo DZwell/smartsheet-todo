@@ -1,5 +1,5 @@
 const client = require('smartsheet');
-const sheetId = require('../config.json').SHEET_ID;
+const sheetId = require('../../config.json').SHEET_ID;
 
 if (!process.env.SMARTSHEET_TOKEN) {
     throw new Error('Access token required');
@@ -43,6 +43,9 @@ function buildCellsArrayFromTask(task) {
     return cells;
 }
 
+/**
+ * Returns entire sheet object
+ */
 async function getSheet() {
     try {
         sheet = await smartsheet.sheets.getSheet({ id: sheetId });
@@ -54,6 +57,10 @@ async function getSheet() {
     }
 }
 
+/**
+ * Adds a task
+ * @param {Object} task
+ */
 async function addTask(task) {
     const row = {
         toBottom: true,
@@ -73,6 +80,10 @@ async function addTask(task) {
     }
 }
 
+/**
+ * Updates a task
+ * @param {Object} task
+ */
 async function editTask(task) {
     let updatedRow;
     const updatedCells = buildCellsArrayFromTask(task);
@@ -104,16 +115,49 @@ async function editTask(task) {
     }
 }
 
+/**
+ * Deletes a task
+ * @param {Integer} taskId
+ */
+async function deleteTask(taskId) {
+    let rowToDelete;
+
+    sheet.rows.forEach((row) => {
+        const idColumn = row.cells[4];
+        if (taskId === idColumn.value) {
+            rowToDelete = row;
+        }
+    });
+
+    if (!rowToDelete) {
+        throw new Error('404, Task not found');
+    }
+
+    const options = {
+        sheetId,
+        rowId: rowToDelete.id,
+    };
+
+    console.log(rowToDelete);
+
+    try {
+        const result = await smartsheet.sheets.deleteRow(options);
+        console.log(result);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 const hey = {
     body: 'Moose, clean fadfadfsadfor PEsach',
     status: 'definitely notadfadf done',
     category: 'THIS SHOULD BE MORE DIFFERENT',
     dueDate: new Date(),
-    id: 4,
+    id: 3,
 };
 
 getSheet().then(() => {
-    editTask(hey);
+    deleteTask(1);
 });
 
 // smartsheet.sheets.getSheet({ id: sheetId }).then((something) => {
