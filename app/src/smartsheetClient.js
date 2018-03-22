@@ -44,6 +44,41 @@ function buildCellsArrayFromTask(task) {
 }
 
 /**
+ * Returns a row with given task id
+ * @param {Integer} taskId
+ */
+function getTaskById(taskId) {
+    let foundTask;
+    sheet.rows.forEach((row) => {
+        const idColumn = row.cells[4];
+
+        if (taskId === idColumn.value) {
+            foundTask = row;
+        }
+    });
+
+    return foundTask;
+}
+
+/**
+ * Returns filtered list of tasks based on category
+ * @param {String} category
+ */
+function queryTasksByCategory(category) {
+    const filteredTasks = sheet.rows.reduce((tasksArray, row) => {
+        const categoryColumn = row.cells[2];
+        
+        if (category === categoryColumn.value) {
+            tasksArray.push(row);
+        }
+
+        return tasksArray;
+    }, []);
+
+    return filteredTasks;
+}
+
+/**
  * Returns entire sheet object
  */
 async function getSheet() {
@@ -74,7 +109,7 @@ async function addTask(task) {
 
     try {
         const result = await smartsheet.sheets.addRows(options);
-        console.log(result);
+        return result;
     } catch (err) {
         console.log(err);
     }
@@ -85,33 +120,26 @@ async function addTask(task) {
  * @param {Object} task
  */
 async function editTask(task) {
-    let updatedRow;
     const updatedCells = buildCellsArrayFromTask(task);
+    const rowToUpdate = getTaskById(task.id);
 
-    sheet.rows.forEach((row) => {
-        const idColumn = row.cells[4];
-        if (task.id === idColumn.value) {
-            updatedRow = {
-                id: row.id,
-                cells: updatedCells,
-            };
-        }
-    });
-
-    if (!updatedRow) {
+    if (!rowToUpdate) {
         throw new Error('404, Task not found');
     }
 
     const options = {
         sheetId,
-        body: updatedRow,
+        body: {
+            id: rowToUpdate.id,
+            cells: updatedCells,
+        },
     };
 
     try {
         const result = await smartsheet.sheets.updateRow(options);
-        console.log(result);
+        return result;
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 }
 
@@ -120,14 +148,7 @@ async function editTask(task) {
  * @param {Integer} taskId
  */
 async function deleteTask(taskId) {
-    let rowToDelete;
-
-    sheet.rows.forEach((row) => {
-        const idColumn = row.cells[4];
-        if (taskId === idColumn.value) {
-            rowToDelete = row;
-        }
-    });
+    const rowToDelete = getTaskById(taskId);
 
     if (!rowToDelete) {
         throw new Error('404, Task not found');
@@ -138,26 +159,23 @@ async function deleteTask(taskId) {
         rowId: rowToDelete.id,
     };
 
-    console.log(rowToDelete);
-
     try {
         const result = await smartsheet.sheets.deleteRow(options);
-        console.log(result);
+        return result;
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 }
 
 const hey = {
-    body: 'Moose, clean fadfadfsadfor PEsach',
+    body: 'Diff body',
     status: 'definitely notadfadf done',
-    category: 'THIS SHOULD BE MORE DIFFERENT',
+    category: 'Heres one with another category',
     dueDate: new Date(),
-    id: 3,
 };
 
 getSheet().then(() => {
-    deleteTask(1);
+    console.log(queryTasksByCategory(hey.category));
 });
 
 // smartsheet.sheets.getSheet({ id: sheetId }).then((something) => {
