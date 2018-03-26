@@ -5,6 +5,7 @@
         "no-underscore-dangle":"off"
     },
     "env": {
-        "mocha": true
+        "mocha": true,
+        "es6": true
     }
 }
