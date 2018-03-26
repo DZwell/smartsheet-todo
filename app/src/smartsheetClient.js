@@ -1,4 +1,4 @@
-const client = require('smartsheet');
+const smartsheet = require('./rawSmartsheetClient');
 const sheetId = require('../../config.json').SHEET_ID;
 
 if (!process.env.SMARTSHEET_TOKEN) {
@@ -12,21 +12,6 @@ if (!sheetId) {
 class SmartsheetClient {
     constructor() {
         this.columnMap = {};
-        this.smartsheet = client.createClient({ accessToken: process.env.SMARTSHEET_TOKEN });
-    }
-
-    /**
-     * Returns entire sheet object
-     */
-    async getSheet() {
-        try {
-            const sheet = await this.smartsheet.sheets.getSheet({ id: sheetId });
-            this.columnMap = this._mapColumnNameToId(sheet.columns);
-
-            return sheet;
-        } catch (err) {
-            throw new Error(err.message);
-        }
     }
 
     /**
@@ -35,7 +20,7 @@ class SmartsheetClient {
      */
     async querySheetByCategory(category) {
         try {
-            const sheet = await this.smartsheet.sheets.getSheet({ id: sheetId });
+            const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
             this._mapColumnNameToId(sheet.columns);
 
             return sheet.rows.reduce((tasksArray, row) => {
@@ -47,7 +32,7 @@ class SmartsheetClient {
                 return tasksArray;
             }, []);
         } catch (err) {
-            throw new Error(err.message);
+            throw err;
         }
     }
 
@@ -55,11 +40,11 @@ class SmartsheetClient {
      * Returns a row with given task id
      * @param {Integer} taskId
      */
-    async getTaskById(taskId) {
+    async getTaskById(taskId) { // eslint-disable-line class-methods-use-this
         let foundTask;
 
         try {
-            const sheet = await this.smartsheet.sheets.getSheet({ id: sheetId });
+            const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
 
             sheet.rows.forEach((row) => {
                 const idColumn = row.cells[4];
@@ -91,7 +76,7 @@ class SmartsheetClient {
         };
 
         try {
-            return await this.smartsheet.sheets.addRows(options);
+            return await smartsheet.sheets.addRows(options);
         } catch (err) {
             throw err;
         }
@@ -102,25 +87,20 @@ class SmartsheetClient {
      * @param {Object} task
      */
     async editTask(task) {
-        let rowToUpdate;
         const updatedCells = this._buildCellsArrayFromTask(task);
 
         try {
-            rowToUpdate = await this.getTaskById(task.id);
-        } catch (err) {
-            throw err;
-        }
+            const rowToUpdate = await this.getTaskById(task.id);
 
-        const options = {
-            sheetId,
-            body: {
-                id: rowToUpdate.id,
-                cells: updatedCells,
-            },
-        };
+            const options = {
+                sheetId,
+                body: {
+                    id: rowToUpdate.id,
+                    cells: updatedCells,
+                },
+            };
 
-        try {
-            return await this.smartsheet.sheets.updateRow(options);
+            return await smartsheet.sheets.updateRow(options);
         } catch (err) {
             throw err;
         }
@@ -131,21 +111,15 @@ class SmartsheetClient {
      * @param {Integer} taskId
      */
     async deleteTask(taskId) {
-        let rowToDelete;
-
         try {
-            rowToDelete = await this.getTaskById(taskId);
-        } catch (err) {
-            throw err;
-        }
+            const rowToDelete = await this.getTaskById(taskId);
 
-        const options = {
-            sheetId,
-            rowId: rowToDelete.id,
-        };
+            const options = {
+                sheetId,
+                rowId: rowToDelete.id,
+            };
 
-        try {
-            return await this.smartsheet.sheets.deleteRow(options);
+            return await smartsheet.sheets.deleteRow(options);
         } catch (err) {
             throw err;
         }
@@ -182,10 +156,10 @@ class SmartsheetClient {
     }
 }
 
-// export default new SmartsheetClient();
+module.exports = new SmartsheetClient();
 
-const ss = new SmartsheetClient();
+// const ss = new SmartsheetClient();
 
-ss.getSheet().then((sheet) => {
-    console.log(sheet);
-});
+// ss.querySheetByCategory('Heres one with a category').then((sheet) => {
+//     console.log(sheet);
+// });
