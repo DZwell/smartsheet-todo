@@ -1,7 +1,10 @@
 const smartsheetClient = require('./clients/smartsheetClient');
 const express = require('express');
-
+const bodyParser = require('body-parser');
 const app = express();
+
+app.use(bodyParser.json());
+
 
 app.get('/api/tasks', (req, res) => {
     smartsheetClient.getTasks().then((tasks) => {
@@ -17,11 +20,19 @@ app.delete('/api/tasks/:id', (req, res) => {
     smartsheetClient.deleteTask(req.params.id).then((result) => {
 
         res.send({ result });
-        console.log(result);
     }).catch((error) => {
-        throw error;
+        console.log(error);
     });
 });
+
+app.put('/api/tasks/:id', (req, res) => {
+    smartsheetClient.editTask(req.body).then((result) => {
+
+        res.send({ result });
+    }).catch((error) => {
+        console.log(error);
+    });
+})
 
 
 app.use('/*', express.static(`${__dirname}/lib/`));
