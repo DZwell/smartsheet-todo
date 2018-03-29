@@ -1,8 +1,8 @@
 const sinon = require('sinon');
 const should = require('should');
-const sheetId = require('../../config.json').SHEET_ID;
-const smartsheet = require('../src/rawSmartsheetClient');
-const objectUnderTest = require('../src/smartsheetClient');
+const sheetId = require('../../../../config.json').SHEET_ID;
+const smartsheet = require('../rawSmartsheetClient');
+const objectUnderTest = require('../smartsheetClient');
 
 describe('Smartsheet client', () => {
     let sandbox;
@@ -100,7 +100,7 @@ describe('Smartsheet client', () => {
                 value: new Date(),
             },
         ];
-        
+
         const dummyRow = {
             toBottom: true,
             cells: dummyCells,
