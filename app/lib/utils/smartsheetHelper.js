@@ -34,8 +34,7 @@ function mapColumnIdToTitle(columns) {
  * Returns an array of cell objects
  * @param {Object} task
  */
-function buildCellsArrayFromTask(task) {
-    const columnMap = {};
+function buildCellsArrayFromTask(task, columnMap) {
     const taskCopy = Object.assign({}, task);
     delete taskCopy.id;
 

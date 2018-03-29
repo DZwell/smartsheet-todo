@@ -11,17 +11,18 @@ class TaskList extends Component {
   }
 
   componentDidMount() {
-    this.callApi()
+    this.getTasks()
       .then(res => this.setState({ tasks: res.tasks }))
       .catch(err => console.log(err));
   }
 
-  async callApi() {
+  async getTasks() {
     const response = await fetch('/api/tasks');
     const body = await response.json();
-    console.log(body);
 
-    if (response.status !== 200) throw Error(body.message);
+    if (response.status !== 200) {
+      throw Error(body.message);
+    }
 
     return body;
   };
@@ -31,11 +32,16 @@ class TaskList extends Component {
       <div className="App">
         <h1>Smartsheet Todo</h1>
         {this.state.tasks.map(task =>
+        <ul key={task.id}>
           <Task 
           key={task.id}
           body={task.body}
           id={task.id}
+          completed={task.completed}
+          category={task.category}
+          dueDate={task.dueDate}
           />
+        </ul>
         )}
       </div>
     );
