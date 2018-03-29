@@ -63,6 +63,7 @@ async function querySheetByCategory(category) {
 async function getRowById(taskId) {
     let foundTask;
 
+    
     if (!taskId) {
         throw new Error('Missing taskId');
     }
@@ -157,7 +158,11 @@ async function deleteTask(taskId) {
     }
 
     try {
-        const rowToDelete = await getRowById(taskId);
+        const rowToDelete = await getRowById(Number(taskId));
+
+        if (!rowToDelete) {
+            throw new Error('Task does not exist');
+        }
 
         const options = {
             sheetId,
