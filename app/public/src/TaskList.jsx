@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import logo from './logo.svg';
+import Task from './Task';
 import './App.css';
 
-class App extends Component {
+class TaskList extends Component {
   constructor() {
     super();
     this.state = {
@@ -30,13 +29,17 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <h1>Tasks</h1>
+        <h1>Smartsheet Todo</h1>
         {this.state.tasks.map(task =>
-          <li key={task.id}>{task.body}</li>
+          <Task 
+          key={task.id}
+          body={task.body}
+          id={task.id}
+          />
         )}
       </div>
     );
   }
 }
 
-export default App;
+export default TaskList;

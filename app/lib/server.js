@@ -14,7 +14,7 @@ app.get('/api/tasks', (req, res) => {
 });
 
 app.delete('/api/tasks/:id', (req, res) => {
-    smartsheetClient.deleteTask(req.params).then((result) => {
+    smartsheetClient.deleteTask(req.params.id).then((result) => {
 
         res.send({ result });
         console.log(result);

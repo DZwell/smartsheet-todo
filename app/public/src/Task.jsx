@@ -1,42 +1,31 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import logo from './logo.svg';
 import './App.css';
 
-class App extends Component {
-  constructor() {
+class Task extends Component {
+  constructor(props) {
     super();
     this.state = {
       tasks: []
     }
+
+    this.deleteTask = this.deleteTask.bind(this);
   }
 
-  componentDidMount() {
-    this.callApi()
-      .then(res => this.setState({ tasks: res.tasks }))
-      .catch(err => console.log(err));
+  deleteTask() {
+    fetch(`/api/tasks/${this.props.id}`, { method: 'DELETE', body: this.props.id }).then(() => {
+      window.location.reload();
+    }).catch((error) => {
+      console.log(error);
+    });
   }
-
-  async callApi() {
-    const response = await fetch('/api/tasks/:id', { method: 'DELETE' });
-    const body = await response.json();
-    console.log(body);
-
-    if (response.status !== 200) throw Error(body.message);
-
-    return body;
-  };
 
   render() {
     return (
       <div className="App">
-        <h1>Tasks</h1>
-        {this.state.tasks.map(task =>
-          <li key={task.id}>{task.body}</li>
-        )}
+        <p onClick={this.deleteTask} key={this.props.id}>{this.props.body}</p>
       </div>
     );
   }
 }
 
-export default App;
+export default Task;
