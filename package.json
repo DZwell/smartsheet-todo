@@ -4,7 +4,7 @@
   "description": "Smartsheet to do list",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./app/lib/clients/tests/*"
+    "test": "mocha ./app/server/clients/tests/*"
   },
   "repository": {
     "type": "git",

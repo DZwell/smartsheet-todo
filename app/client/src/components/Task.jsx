@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import '../static/App.css';
 
 class Task extends Component {
   constructor(props) {
@@ -27,7 +27,7 @@ class Task extends Component {
     if (response.status !== 200) {
       throw Error(body.message);
     }
-    
+    // TODO: Rerender or forceUpdate or something instead of this
     window.location.reload();
     return body;
   }

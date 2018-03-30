@@ -2,6 +2,7 @@ const sinon = require('sinon');
 const should = require('should');
 const sheetId = require('../../../../config.json').SHEET_ID;
 const smartsheet = require('../rawSmartsheetClient');
+const smartsheetHelper = require('../../utils/smartsheetHelper');
 const objectUnderTest = require('../smartsheetClient');
 
 describe('Smartsheet client', () => {
@@ -49,14 +50,14 @@ describe('Smartsheet client', () => {
         });
     });
 
-    describe('#getTaskById', () => {
+    describe('#getRowById', () => {
         it('should call smartsheet.getSheet with provided args', async () => {
             /* arrange */
             const dummyId = 'dummyId';
             const getSheetMock = smartsheetMock.expects('getSheet').withArgs({ id: sheetId }).returns({ columns: [], rows: [] });
 
             /* act */
-            await objectUnderTest.getTaskById(dummyId);
+            await objectUnderTest.getRowById(dummyId);
 
             /* assert */
             getSheetMock.verify();
@@ -71,7 +72,7 @@ describe('Smartsheet client', () => {
 
             /* act */
             try {
-                await objectUnderTest.getTaskById(dummyId);
+                await objectUnderTest.getRowById(dummyId);
             } catch (err) {
                 actual = err;
             }
@@ -113,7 +114,7 @@ describe('Smartsheet client', () => {
 
         it('should call smartsheet.addRows with provided args', async () => {
             /* arrange */
-            sandbox.stub(objectUnderTest, '_buildCellsArrayFromTask').returns(dummyCells);
+            sandbox.stub(smartsheetHelper, 'buildCellsArrayFromTask').returns(dummyCells);
             const addRowsMock = smartsheetMock.expects('addRows').withArgs(dummyOptions);
 
             /* act */
@@ -173,8 +174,8 @@ describe('Smartsheet client', () => {
 
         it('should call smartsheet.updateRow with provided args', async () => {
             /* arrange */
-            sandbox.stub(objectUnderTest, '_buildCellsArrayFromTask').returns(dummyCells);
-            sandbox.stub(objectUnderTest, 'getTaskById').returns(dummyRow);
+            sandbox.stub(smartsheetHelper, 'buildCellsArrayFromTask').returns(dummyCells);
+            sandbox.stub(objectUnderTest, 'getRowById').returns(dummyRow);
             const updateRowMock = smartsheetMock.expects('updateRow').withArgs(dummyOptions);
 
             /* act */
@@ -188,8 +189,8 @@ describe('Smartsheet client', () => {
             /* arrange */
             let actual;
             const expected = new Error('Error');
-            sandbox.stub(objectUnderTest, '_buildCellsArrayFromTask').returns(dummyCells);
-            sandbox.stub(objectUnderTest, 'getTaskById').returns(dummyRow);
+            sandbox.stub(smartsheetHelper, 'buildCellsArrayFromTask').returns(dummyCells);
+            sandbox.stub(objectUnderTest, 'getRowById').returns(dummyRow);
             sandbox.stub(smartsheet.sheets, 'updateRow').throws();
 
             /* act */
@@ -236,7 +237,7 @@ describe('Smartsheet client', () => {
 
         it('should call smartsheet.deleteRow with provided args', async () => {
             /* arrange */
-            sandbox.stub(objectUnderTest, 'getTaskById').returns(dummyRow);
+            sandbox.stub(objectUnderTest, 'getRowById').returns(dummyRow);
             const deleteRowMock = smartsheetMock.expects('deleteRow').withArgs(dummyOptions);
 
             /* act */
@@ -250,7 +251,7 @@ describe('Smartsheet client', () => {
             /* arrange */
             let actual;
             const expected = new Error('Error');
-            sandbox.stub(objectUnderTest, 'getTaskById').returns(dummyRow);
+            sandbox.stub(objectUnderTest, 'getRowById').returns(dummyRow);
             sandbox.stub(smartsheet.sheets, 'deleteRow').throws();
 
             /* act */
