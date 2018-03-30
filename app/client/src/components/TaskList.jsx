@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Task from './Task';
-import './App.css';
+import '../static/App.css';
 
 class TaskList extends Component {
   constructor() {
