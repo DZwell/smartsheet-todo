@@ -21,7 +21,9 @@ class SmartsheetClient {
 
             const columnMap = smartsheetHelper.mapColumnIdToTitle(sheet.columns);
 
-            return sheet.rows.map(row => smartsheetHelper.buildTaskObjectFromCells(row.cells, columnMap));
+            const tasksArray = sheet.rows.map(row => smartsheetHelper.buildTaskObjectFromCells(row.cells, columnMap));
+
+            return tasksArray;
         } catch (err) {
             throw err;
         }

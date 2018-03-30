@@ -5,8 +5,12 @@
         "no-underscore-dangle":"off",
         "class-methods-use-this": "off"
     },
+    "plugins": [
+        "react"
+    ],
     "env": {
         "mocha": true,
-        "es6": true
+        "es6": true,
+        "browser": true
     }
 }
