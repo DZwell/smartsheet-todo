@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Task from './Task';
-import '../static/App.css';
+import '../static/index.css';
 
 class TaskList extends Component {
   constructor() {
@@ -29,8 +29,8 @@ class TaskList extends Component {
 
   render() {
     return (
-      <div className="App">
-        <h1>Smartsheet Todo</h1>
+      <div className="task-list-container">
+        <h1>Smartsheet To do</h1>
         {this.state.tasks.map(task =>
         <ul key={task.id}>
           <Task 

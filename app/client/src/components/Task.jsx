@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../static/App.css';
+import '../static/index.css';
 
 class Task extends Component {
   constructor(props) {
@@ -62,7 +62,7 @@ class Task extends Component {
     return (
       <div>
         <input type="checkbox" onChange={this.changeComplete} defaultChecked={this.props.completed}></input>
-        <li key={this.props.id}>{this.props.body} -- {this.state.done}</li>
+        <li className="task-item" key={this.props.id}>{this.props.body}</li>
         <button type="submit" onClick={this.deleteTask}>Delete</button>
       </div>
     );
