@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import taskController from '../controllers/task';
 import '../static/index.css';
 
 class Task extends Component {
@@ -8,49 +9,18 @@ class Task extends Component {
       tasks: [],
       done: false,
     }
+  }
 
-    this.deleteTask = this.deleteTask.bind(this);
-    this.changeStatus = this.changeStatus.bind(this);
+  handleDelete(id) {
+    taskController.deleteTask(id).catch((err) => {
+      console.log(err);
+    });
   }
 
   componentDidUpdate() {
-    this.changeStatus().then((result) => {
-      console.log('yooo');
+    taskController.changeStatus(this.props).catch((err) => {
+      console.log(err);
     });
-  }
-
-  async deleteTask() {
-    const response = await fetch(`/api/tasks/${this.props.id}`, { method: 'DELETE' });
-    const body = await response.json();
-    console.log(body);
-    
-    if (response.status !== 200) {
-      throw Error(body.message);
-    }
-    // TODO: Rerender or forceUpdate or something instead of this
-    window.location.reload();
-    return body;
-  }
-
-  async changeStatus() {
-    const taskObject = Object.assign({}, this.props, { completed: !this.props.completed });
-    const response = await fetch(`/api/tasks/${this.props.id}`,
-    {
-      method: 'PUT',
-      body: JSON.stringify(taskObject),
-      headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-      },
-    });
-    const body = await response.json();
-    console.log(body);
-    
-    if (response.status !== 200) {
-      throw Error(body.message);
-    }
-    
-    return body;
   }
 
   changeComplete = () => {
@@ -59,11 +29,13 @@ class Task extends Component {
 
   render() {
 
+    const status = this.props.completed ? 'Done' : 'Not done';
+
     return (
       <div>
         <input type="checkbox" onChange={this.changeComplete} defaultChecked={this.props.completed}></input>
-        <li className="task-item" key={this.props.id}>{this.props.body}</li>
-        <button type="submit" onClick={this.deleteTask}>Delete</button>
+        <li className="task-item" key={this.props.id}>{this.props.body} ----- {status}</li>
+        <button type="submit" onClick={() => this.handleDelete(this.props.id)}>Delete</button>
       </div>
     );
   }

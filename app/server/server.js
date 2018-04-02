@@ -32,7 +32,16 @@ app.put('/api/tasks/:id', (req, res) => {
     }).catch((error) => {
         console.log(error);
     });
-})
+});
+
+app.post('/api/tasks', (req, res) => {
+    smartsheetClient.addTask(req.body).then((result) => {
+
+        res.send({ result });
+    }).catch((error) => {
+        console.log(error);
+    });
+});
 
 
 app.use('/*', express.static(`${__dirname}/lib/`));
