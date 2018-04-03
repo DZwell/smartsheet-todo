@@ -12,24 +12,37 @@ class App extends Component {
       taskToEdit: {},
     }
     this.editTask = this.editTask.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {
-    taskController.getTasks()
-      .then(res => this.setState({ tasks: res.tasks }))
-      .catch(err => console.log(err));
+  async componentWillMount() {
+    const results = await taskController.getTasks();
+    this.setState({ tasks: results.tasks });
   }
 
+  // HandleLoadEditTask or something like that
   editTask(task) {
     this.setState({ taskToEdit: task });
+  }
+
+  // Break out into handleEdit and handleAdd maybe
+  async handleSubmit(task, isEditing = false) {
+    if (isEditing) {
+      await taskController.editTask(task);
+    } else {
+      await taskController.addTask(task);
+    }
+    const results = await taskController.getTasks();
+    this.setState({ tasks: results.tasks });
   }
 
   render() {
     return (
       <div className="app-container">
         <h1>Smartsheet To do</h1>
-        <AddTask 
+        <AddTask
           edit={this.state.taskToEdit}
+          onSubmit={this.handleSubmit}
         />
         <TaskList
           tasks={this.state.tasks}
