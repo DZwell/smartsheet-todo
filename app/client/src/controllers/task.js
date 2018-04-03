@@ -58,13 +58,39 @@ class TaskController {
     }
 
     /**
-     * Delete a task
+     * Add a task
      * @param {Number} id
      */
     async addTask(task) {
         const response = await fetch('/api/tasks',
             {
                 method: 'POST',
+                body: JSON.stringify(task),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+
+        const body = await response.json();
+
+        if (response.status !== 200) {
+            throw Error(body.message);
+        }
+        // TODO: Rerender or forceUpdate or something instead of this
+        window.location.reload();
+        return body;
+    }
+
+    /**
+     * Delete a task
+     * @param {Number} id
+     */
+    async editTask(task) {
+        const response = await fetch(`/api/tasks/${task.id}`,
+            {
+                method: 'PUT',
                 body: JSON.stringify(task),
                 headers: {
                     'Accept': 'application/json, text/plain, */*',

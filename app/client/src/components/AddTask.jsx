@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import taskController from '../controllers/task';
-import '../static/index.css';
+import '../styles/index.css';
 
 class AddTask extends Component {
   constructor(props) {
@@ -16,6 +16,17 @@ class AddTask extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+
+  componentWillReceiveProps() {
+    if (Object.keys(this.props.edit).length > 0) {
+      Object.keys(this.props.edit).forEach((key) => {
+        this.setState({
+          [key]: this.props.edit[key]
+        });
+      });
+    }
+  }
+
   handleChange(event) {
     const value = event.target.value;
     const name = event.target.name;
@@ -26,9 +37,14 @@ class AddTask extends Component {
   }
 
   handleSubmit(event) {
-    taskController.addTask(this.state);
-    console.log(this.state.value);
-    window.location.reload();
+    if (Object.keys(this.props.edit).length > 0) {
+      const taskWithId = Object.assign({}, this.state, { id: this.props.edit.id });
+      taskController.editTask(taskWithId);
+      window.location.reload();
+    } else {
+      taskController.addTask(this.state);
+      window.location.reload();
+    }
   }
 
   render() {
@@ -40,11 +56,11 @@ class AddTask extends Component {
         </label>
         <label>
           Category:
-          <input placeholder="*optional" name="category" type="text" value={this.state.category} onChange={this.handleChange} />
+          <input placeholder="*optional" name="category" type="text"value={this.state.category}  onChange={this.handleChange} />
         </label>
         <label>
           Due date:
-          <input type="date" name="dueDate" value={this.state.dueDate} onChange={this.handleChange}/>
+          <input type="date" name="dueDate" value={this.state.dueDate}  onChange={this.handleChange}/>
         </label>
         <input type="submit" value="Submit" onClick={this.handleSubmit}/>
       </form>
