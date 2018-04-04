@@ -36,10 +36,14 @@ class AddTask extends Component {
     });
   }
 
+
+  // FIXING EDIT, BREAKING OUT FROM SUBMIT MAYBE?
   async handleSubmit(event) {
+    let isEditing;
     if (Object.keys(this.props.edit).length > 0) {
+      isEditing = true;
       const taskWithId = Object.assign({}, this.state, { id: this.props.edit.id });
-      await this.props.onSubmit(taskWithId, true);
+      await this.props.onSubmit(taskWithId, isEditing);
     } else {
       await this.props.onSubmit(this.state)
     }
@@ -50,17 +54,17 @@ class AddTask extends Component {
       <form onSubmit={this.handleSubmit}>
         <label>
           Add a task here:
-          <input placeholder="Task body"  name="body" type="text" value={this.state.body} onChange={this.handleChange} />
+          <input placeholder="Task body"  name="body" type="text" value={this.state.body} onChange={this.handleChange}/>
         </label>
         <label>
           Category:
-          <input placeholder="*optional" name="category" type="text" value={this.state.category}  onChange={this.handleChange} />
+          <input placeholder="*optional" name="category" type="text" value={this.state.category}  onChange={this.handleChange}/>
         </label>
         <label>
           Due date:
           <input type="date" name="dueDate" value={this.state.dueDate} onChange={this.handleChange}/>
         </label>
-        <input type="submit" value="Submit" onClick={this.handleSubmit}/>
+        <input type="submit" value="Submit"/>
       </form>
     );
   }

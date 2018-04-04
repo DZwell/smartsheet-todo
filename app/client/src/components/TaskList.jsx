@@ -3,12 +3,26 @@ import Task from './Task';
 import '../styles/index.css';
 
 class TaskList extends Component {
-  getTaskToEdit = (taskToEdit) => {
+  constructor() {
+    super()
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleStatusChange = this.handleStatusChange.bind(this);
+  }
+
+  handleEdit(taskToEdit) {
     this.props.edit(taskToEdit);
-}
+  }
+
+  handleDelete(id) {
+    this.props.delete(id);
+  }
+
+  handleStatusChange(task) {
+    this.props.changeStatus(task);
+  }
 
   render() {
-    console.log(this.props);
     return (
       <div className="task-list-container">
         {this.props.tasks.map(task =>
@@ -20,7 +34,9 @@ class TaskList extends Component {
               completed={task.completed}
               category={task.category}
               dueDate={task.dueDate}
-              edit={this.getTaskToEdit}
+              edit={this.handleEdit}
+              delete={this.handleDelete}
+              changeStatus={this.handleStatusChange}
             />
           </ul>
         )}
