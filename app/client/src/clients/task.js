@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
 
-class TaskController {
+class TaskClient {
     /**
      * Get all tasks
      */
@@ -35,11 +35,10 @@ class TaskController {
      * @param {Object} task
      */
     async changeStatus(task) {
-        const taskObject = Object.assign({}, task, { completed: !task.completed });
         const response = await fetch(`/api/tasks/${task.id}`,
             {
                 method: 'PUT',
-                body: JSON.stringify(taskObject),
+                body: JSON.stringify(task),
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
                     'Content-Type': 'application/json',
@@ -107,4 +106,4 @@ class TaskController {
     }
 }
 
-export default new TaskController();
+export default new TaskClient();

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TaskList from './TaskList';
 import AddTask from './AddTask';
-import taskController from '../controllers/task';
+import taskClient from '../clients/task';
 import '../styles/index.css';
 
 class App extends Component {
@@ -11,28 +11,42 @@ class App extends Component {
       tasks: [],
       taskToEdit: {},
     }
-    this.editTask = this.editTask.bind(this);
+    this.loadTaskToEdit = this.loadTaskToEdit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleStatusChange = this.handleStatusChange.bind(this);
   }
 
   async componentWillMount() {
-    const results = await taskController.getTasks();
+    const results = await taskClient.getTasks();
     this.setState({ tasks: results.tasks });
   }
 
-  // HandleLoadEditTask or something like that
-  editTask(task) {
+  loadTaskToEdit(task) {
     this.setState({ taskToEdit: task });
   }
 
-  // Break out into handleEdit and handleAdd maybe
   async handleSubmit(task, isEditing = false) {
     if (isEditing) {
-      await taskController.editTask(task);
+      await taskClient.editTask(task);
+      const results = await taskClient.getTasks();
+      this.setState({ tasks: results.tasks });
     } else {
-      await taskController.addTask(task);
+      await taskClient.addTask(task);
+      const results = await taskClient.getTasks();
+      this.setState({ tasks: results.tasks });
     }
-    const results = await taskController.getTasks();
+  }
+
+  async handleDelete(id) {
+    await taskClient.deleteTask(id);
+    const results = await taskClient.getTasks();
+    this.setState({ tasks: results.tasks });
+  }
+
+  async handleStatusChange(task) {
+    await taskClient.changeStatus(task);
+    const results = await taskClient.getTasks();
     this.setState({ tasks: results.tasks });
   }
 
@@ -46,8 +60,9 @@ class App extends Component {
         />
         <TaskList
           tasks={this.state.tasks}
-          edit={this.editTask}
-
+          edit={this.loadTaskToEdit}
+          delete={this.handleDelete}
+          changeStatus={this.handleStatusChange}
         />
       </div>
     );
