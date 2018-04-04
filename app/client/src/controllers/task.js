@@ -26,8 +26,7 @@ class TaskController {
         if (response.status !== 200) {
             throw Error(body.message);
         }
-        // TODO: Rerender or forceUpdate or something instead of this
-        window.location.reload();
+
         return body;
     }
 
@@ -78,8 +77,7 @@ class TaskController {
         if (response.status !== 200) {
             throw Error(body.message);
         }
-        // TODO: Rerender or forceUpdate or something instead of this
-        window.location.reload();
+
         return body;
     }
 
@@ -104,8 +102,7 @@ class TaskController {
         if (response.status !== 200) {
             throw Error(body.message);
         }
-        // TODO: Rerender or forceUpdate or something instead of this
-        window.location.reload();
+
         return body;
     }
 }

@@ -9,18 +9,13 @@ class Task extends Component {
     this.changeStatus = this.changeStatus.bind(this);
   }
 
-  handleDelete(id) {
-    taskController.deleteTask(id).catch((err) => {
-      console.log(err);
-    });
+  async handleDelete(id) {
+    await taskController.deleteTask(id);
   }
 
 
-  changeStatus() {
-    this.setState({ sup: this.props });
-    taskController.changeStatus(this.props).catch((err) => {
-      console.log(err);
-    });
+  async changeStatus() {
+    await taskController.changeStatus(this.props);
   }
 
   handleEdit(taskToEdit) {

@@ -17,11 +17,11 @@ class AddTask extends Component {
   }
 
 
-  componentWillReceiveProps() {
-    if (Object.keys(this.props.edit).length > 0) {
-      Object.keys(this.props.edit).forEach((key) => {
+  componentWillReceiveProps(nextProps) {
+    if (Object.keys(nextProps.edit).length > 0) {
+      Object.keys(nextProps.edit).forEach((key) => {
         this.setState({
-          [key]: this.props.edit[key]
+          [key]: nextProps.edit[key]
         });
       });
     }
@@ -36,14 +36,12 @@ class AddTask extends Component {
     });
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     if (Object.keys(this.props.edit).length > 0) {
       const taskWithId = Object.assign({}, this.state, { id: this.props.edit.id });
-      taskController.editTask(taskWithId);
-      window.location.reload();
+      await this.props.onSubmit(taskWithId, true);
     } else {
-      taskController.addTask(this.state);
-      window.location.reload();
+      await this.props.onSubmit(this.state)
     }
   }
 
@@ -56,11 +54,11 @@ class AddTask extends Component {
         </label>
         <label>
           Category:
-          <input placeholder="*optional" name="category" type="text"value={this.state.category}  onChange={this.handleChange} />
+          <input placeholder="*optional" name="category" type="text" value={this.state.category}  onChange={this.handleChange} />
         </label>
         <label>
           Due date:
-          <input type="date" name="dueDate" value={this.state.dueDate}  onChange={this.handleChange}/>
+          <input type="date" name="dueDate" value={this.state.dueDate} onChange={this.handleChange}/>
         </label>
         <input type="submit" value="Submit" onClick={this.handleSubmit}/>
       </form>
