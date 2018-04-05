@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import taskController from '../controllers/task';
 import '../styles/index.css';
 
 class Task extends Component {
@@ -13,7 +12,7 @@ class Task extends Component {
   }
 
   handleStatusChange(task) {
-    const statusChangedTask = Object.assign({}, task, { completed: !task.completed});
+    const statusChangedTask = Object.assign({}, task, { completed: !task.completed });
     this.props.changeStatus(statusChangedTask);
   }
 
@@ -25,8 +24,8 @@ class Task extends Component {
       <li className="task-item">
         <input type="checkbox" onChange={() => this.handleStatusChange(this.props)} defaultChecked={this.props.completed}></input>
         <span onClick={this.editTask} key={this.props.id}>{this.props.body} ----- {status} --- Due on: {this.props.dueDate}</span>
-        <button type="submit" onClick={() => this.handleDelete(this.props.id)}>Delete</button>
-        <button type="button" onClick={() => this.handleEdit(this.props)}>Edit</button>
+        <button onClick={() => this.handleDelete(this.props.id)}>Delete</button>
+        <button onClick={() => this.handleEdit(this.props)}>Edit</button>
       </li>
     );
   }

@@ -6,44 +6,31 @@ const app = express();
 app.use(bodyParser.json());
 
 
-app.get('/api/tasks', (req, res) => {
-    smartsheetClient.getTasks().then((tasks) => {
-
-
-        res.send({ tasks });
-    }).catch((error) => {
-        throw error;
-    });
+app.get('/api/tasks', async (req, res) => {
+  const tasks = await smartsheetClient.getTasks();
+  res.send({ tasks });
 });
 
-app.delete('/api/tasks/:id', (req, res) => {
-    smartsheetClient.deleteTask(req.params.id).then((result) => {
-
-        res.send({ result });
-    }).catch((error) => {
-        console.log(error);
-    });
+app.get('/api/tasks/:category', async (req, res) => {
+  const tasks = await smartsheetClient.querySheetByCategory(req.params.category);
+  res.send({ tasks });
 });
 
-app.put('/api/tasks/:id', (req, res) => {
-    smartsheetClient.editTask(req.body).then((result) => {
-
-        res.send({ result });
-    }).catch((error) => {
-        console.log(error);
-    });
+app.delete('/api/tasks/:id', async (req, res) => {
+  const result = await smartsheetClient.deleteTask(req.params.id);
+  res.send({ result });
 });
 
-app.post('/api/tasks', (req, res) => {
-    smartsheetClient.addTask(req.body).then((result) => {
-
-        res.send({ result });
-    }).catch((error) => {
-        console.log(error);
-    });
+app.put('/api/tasks/:id', async (req, res) => {
+  const result = await smartsheetClient.editTask(req.body);
+  res.send({ result });
 });
 
+app.post('/api/tasks', async (req, res) => {
+  const result = await smartsheetClient.addTask(req.body);
+  res.send({ result });
+});
 
 app.use('/*', express.static(`${__dirname}/lib/`));
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
+app.listen(3000, () => console.log('Listening on port 3000!'));
