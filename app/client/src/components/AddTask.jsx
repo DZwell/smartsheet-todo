@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import taskController from '../controllers/task';
 import '../styles/index.css';
 
 class AddTask extends Component {
@@ -9,20 +8,33 @@ class AddTask extends Component {
       body: '',
       dueDate: '',
       completed: false,
-      category: ''
+      category: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+ * Clears state
+ * @param {Object} state 
+ */
+_resetState() {
+  this.setState({
+    body: '',
+    category: '',
+    dueDate: '',
+  })
+}
+
 
   componentWillReceiveProps(nextProps) {
-    if (Object.keys(nextProps.edit).length > 0) {
-      Object.keys(nextProps.edit).forEach((key) => {
-        this.setState({
-          [key]: nextProps.edit[key]
-        });
+    // Populate input fields with task to edit
+    if (nextProps.edit.id !== this.props.edit.id) {
+      this.setState({
+        body: nextProps.edit.body,
+        category: nextProps.edit.category,
+        dueDate: nextProps.edit.dueDate
       });
     }
   }
@@ -36,17 +48,18 @@ class AddTask extends Component {
     });
   }
 
-
-  // FIXING EDIT, BREAKING OUT FROM SUBMIT MAYBE?
-  async handleSubmit(event) {
+  
+  handleSubmit(event) {
+    event.preventDefault();
     let isEditing;
     if (Object.keys(this.props.edit).length > 0) {
       isEditing = true;
       const taskWithId = Object.assign({}, this.state, { id: this.props.edit.id });
-      await this.props.onSubmit(taskWithId, isEditing);
+      this.props.onSubmit(taskWithId, isEditing);
     } else {
-      await this.props.onSubmit(this.state)
+      this.props.onSubmit(this.state)
     }
+    this._resetState();
   }
 
   render() {

@@ -3,177 +3,152 @@ const sheetId = require('../../../config.json').SHEET_ID;
 const smartsheetHelper = require('../utils/smartsheetHelper');
 
 if (!sheetId) {
-    throw new Error('Sheet id required');
+  throw new Error('Sheet id required');
 }
 
 
 class SmartsheetClient {
-    /**
-     * Returns an array of tasks
-     */
-    async getTasks() {
-        try {
-            const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
+  /**
+   * Returns an array of tasks
+   */
+  async getTasks() {
+    const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
 
-            if (sheet.rows.length < 1) {
-                return [];
-            }
-
-            const columnMap = smartsheetHelper.mapColumnIdToTitle(sheet.columns);
-
-            const tasksArray = sheet.rows.map(row => smartsheetHelper.buildTaskObjectFromCells(row.cells, columnMap));
-
-            return tasksArray;
-        } catch (err) {
-            throw err;
-        }
+    if (sheet.rows.length < 1) {
+      return [];
     }
 
-    /**
-     * Returns filtered list of tasks based on category
-     * @param {String} category
-     */
-    async querySheetByCategory(category) {
-        if (!category) {
-            throw new Error('Missing category');
-        }
+    const columnMap = smartsheetHelper.mapColumnIdToTitle(sheet.columns);
 
-        try {
-            const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
-            const columnMap = smartsheetHelper.mapColumnIdToTitle(sheet.columns);
+    const tasksArray = sheet.rows.map(row => smartsheetHelper.buildTaskObjectFromCells(row.cells, columnMap));
 
-            const filteredRows = sheet.rows.reduce((tasksArray, row) => {
-                const categoryColumn = row.cells[2];
-                if (category === categoryColumn.value) {
-                    tasksArray.push(row);
-                }
+    return tasksArray;
+  }
 
-                return tasksArray;
-            }, []);
-
-            const filteredTasks = filteredRows.map(row => smartsheetHelper.buildTaskObjectFromCells(row.cells, columnMap));
-
-            return filteredTasks;
-        } catch (err) {
-            throw err;
-        }
+  /**
+   * Returns filtered list of tasks based on category
+   * @param {String} category
+   */
+  async querySheetByCategory(category) {
+    if (!category) {
+      throw new Error('Missing category');
     }
 
-    /**
-     * Returns a row with given task id
-     * @param {Integer} taskId
-     */
-    async getRowById(taskId) {
-        let foundTask;
+    const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
+    const columnMap = smartsheetHelper.mapColumnIdToTitle(sheet.columns);
 
+    const filteredRows = sheet.rows.reduce((tasksArray, row) => {
+      const categoryColumn = row.cells[2];
+      if (category === categoryColumn.value) {
+        tasksArray.push(row);
+      }
 
-        if (!taskId) {
-            throw new Error('Missing taskId');
-        }
+      return tasksArray;
+    }, []);
 
-        try {
-            const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
+    const filteredTasks = filteredRows.map(row => smartsheetHelper.buildTaskObjectFromCells(row.cells, columnMap));
 
-            sheet.rows.forEach((row) => {
-                const idColumn = row.cells[4];
+    return filteredTasks;
+  }
 
-                if (taskId === idColumn.value) {
-                    foundTask = row;
-                }
-            });
+  /**
+   * Returns a row with given task id
+   * @param {Integer} taskId
+   */
+  async getRowById(taskId) {
+    let foundTask;
 
-            return foundTask;
-        } catch (err) {
-            throw err;
-        }
+    if (!taskId) {
+      throw new Error('Missing taskId');
     }
 
-    /**
-     * Adds a task
-     * @param {Object} task
-     */
-    async addTask(task) {
-        if (!task) {
-            throw new Error('Missing task');
-        }
+    const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
 
-        try {
-            const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
-            const columnMap = smartsheetHelper.mapColumnTitleToId(sheet.columns);
-            const cellsArray = smartsheetHelper.buildCellsArrayFromTask(task, columnMap);
+    sheet.rows.forEach((row) => {
+      const idColumn = row.cells[4];
 
-            const row = {
-                toBottom: true,
-                cells: cellsArray,
-            };
+      if (taskId === idColumn.value) {
+        foundTask = row;
+      }
+    });
 
-            const options = {
-                sheetId,
-                body: row,
-            };
+    return foundTask;
+  }
 
-            return await smartsheet.sheets.addRows(options);
-        } catch (err) {
-            throw err;
-        }
+  /**
+   * Adds a task
+   * @param {Object} task
+   */
+  async addTask(task) {
+    if (!task) {
+      throw new Error('Missing task');
     }
 
-    /**
-     * Updates a task
-     * @param {Object} task
-     */
-    async editTask(task) {
-        if (!task) {
-            throw new Error('Missing task');
-        }
+    const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
+    const columnMap = smartsheetHelper.mapColumnTitleToId(sheet.columns);
+    const cellsArray = smartsheetHelper.buildCellsArrayFromTask(task, columnMap);
 
-        try {
-            const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
-            const columnMap = smartsheetHelper.mapColumnTitleToId(sheet.columns);
-            const updatedCells = smartsheetHelper.buildCellsArrayFromTask(task, columnMap);
+    const row = {
+      toBottom: true,
+      cells: cellsArray,
+    };
 
-            const rowToUpdate = await this.getRowById(task.id);
+    const options = {
+      sheetId,
+      body: row,
+    };
 
-            const options = {
-                sheetId,
-                body: {
-                    id: rowToUpdate.id,
-                    cells: updatedCells,
-                },
-            };
+    return await smartsheet.sheets.addRows(options);
+  }
 
-            return await smartsheet.sheets.updateRow(options);
-        } catch (err) {
-            throw err;
-        }
+  /**
+   * Updates a task
+   * @param {Object} task
+   */
+  async editTask(task) {
+    if (!task) {
+      throw new Error('Missing task');
     }
 
-    /**
-     * Deletes a task
-     * @param {Integer} taskId
-     */
-    async deleteTask(taskId) {
-        if (!taskId) {
-            throw new Error('Missing taskId');
-        }
+    const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
+    const columnMap = smartsheetHelper.mapColumnTitleToId(sheet.columns);
+    const updatedCells = smartsheetHelper.buildCellsArrayFromTask(task, columnMap);
 
-        try {
-            const rowToDelete = await this.getRowById(Number(taskId));
+    const rowToUpdate = await this.getRowById(task.id);
 
-            if (!rowToDelete) {
-                throw new Error('Task does not exist');
-            }
+    const options = {
+      sheetId,
+      body: {
+        id: rowToUpdate.id,
+        cells: updatedCells,
+      },
+    };
 
-            const options = {
-                sheetId,
-                rowId: rowToDelete.id,
-            };
+    return await smartsheet.sheets.updateRow(options);
+  }
 
-            return await smartsheet.sheets.deleteRow(options);
-        } catch (err) {
-            throw err;
-        }
+  /**
+   * Deletes a task
+   * @param {Integer} taskId
+   */
+  async deleteTask(taskId) {
+    if (!taskId) {
+      throw new Error('Missing taskId');
     }
+
+    const rowToDelete = await this.getRowById(Number(taskId));
+
+    if (!rowToDelete) {
+      throw new Error('Task does not exist');
+    }
+
+    const options = {
+      sheetId,
+      rowId: rowToDelete.id,
+    };
+
+    return await smartsheet.sheets.deleteRow(options);
+  }
 }
 
 module.exports = new SmartsheetClient();
