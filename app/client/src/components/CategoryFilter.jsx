@@ -27,14 +27,14 @@ class CategoryFilter extends Component {
     return (
       <form onSubmit={this.handleSubmit}>
         <label>
-          <select value={this.state.selectedCategory} onChange={this.handleChange}>
+          <select disabled={this.props.loading} value={this.state.selectedCategory} onChange={this.handleChange}>
             <option disabled>Filter by category</option>
             {this.props.categories.map((category, index) =>
               <option key={index} value={category}>{category}</option>
             )}
           </select>
         </label>
-        <input type="submit" value="Submit" />
+        <input disabled={this.props.loading} type="submit" value="Submit" />
       </form>
     );
   }
