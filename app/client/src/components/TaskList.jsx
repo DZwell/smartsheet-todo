@@ -24,9 +24,18 @@ class TaskList extends Component {
 
   render() {
     return (
-      <div className="task-list-container">
-        {this.props.tasks.map(task =>
-          <ul key={task.id}>
+      <table className="task-list-container">
+        <thead>
+          <tr>
+            <th>*</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Due Date</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.props.tasks.map(task =>
             <Task
               key={task.id}
               body={task.body}
@@ -39,9 +48,9 @@ class TaskList extends Component {
               changeStatus={this.handleStatusChange}
               loading={this.props.loading}
             />
-          </ul>
-        )}
-      </div>
+          )}
+        </tbody>
+      </table>
     );
   }
 }

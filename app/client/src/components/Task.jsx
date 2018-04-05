@@ -13,6 +13,7 @@ class Task extends Component {
 
   handleStatusChange(task) {
     const statusChangedTask = Object.assign({}, task, { completed: !task.completed });
+    delete statusChangedTask.loading;
     this.props.changeStatus(statusChangedTask);
   }
 
@@ -21,12 +22,24 @@ class Task extends Component {
     const status = this.props.completed ? 'Done' : 'Not done';
 
     return (
-      <li className="task-item">
-        <input disabled={this.props.loading} type="checkbox" onChange={() => this.handleStatusChange(this.props)} defaultChecked={this.props.completed}></input>
-        <span onClick={this.editTask} key={this.props.id}>{this.props.body} ----- {status} --- Due on: {this.props.dueDate}</span>
-        <button disabled={this.props.loading} onClick={() => this.handleDelete(this.props.id)}>Delete</button>
-        <button disabled={this.props.loading} onClick={() => this.handleEdit(this.props)}>Edit</button>
-      </li>
+      <tr>
+        <td>
+          <input type="checkbox" onChange={() => this.handleStatusChange(this.props)} defaultChecked={this.props.completed}></input>
+        </td>
+        <td>
+          {this.props.body}
+        </td>
+        <td>
+          {status}
+        </td>
+        <td>
+          {this.props.dueDate}
+        </td>
+        <td>
+          <button className="delete" disabled={this.props.loading} onClick={() => this.handleDelete(this.props.id)}>Delete</button>
+          <button disabled={this.props.loading} onClick={() => this.handleEdit(this.props)}>Edit</button>
+        </td>
+      </tr>
     );
   }
 }
