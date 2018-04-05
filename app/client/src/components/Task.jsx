@@ -22,10 +22,10 @@ class Task extends Component {
 
     return (
       <li className="task-item">
-        <input type="checkbox" onChange={() => this.handleStatusChange(this.props)} defaultChecked={this.props.completed}></input>
+        <input disabled={this.props.loading} type="checkbox" onChange={() => this.handleStatusChange(this.props)} defaultChecked={this.props.completed}></input>
         <span onClick={this.editTask} key={this.props.id}>{this.props.body} ----- {status} --- Due on: {this.props.dueDate}</span>
-        <button onClick={() => this.handleDelete(this.props.id)}>Delete</button>
-        <button onClick={() => this.handleEdit(this.props)}>Edit</button>
+        <button disabled={this.props.loading} onClick={() => this.handleDelete(this.props.id)}>Delete</button>
+        <button disabled={this.props.loading} onClick={() => this.handleEdit(this.props)}>Edit</button>
       </li>
     );
   }

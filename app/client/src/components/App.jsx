@@ -13,6 +13,7 @@ class App extends Component {
       taskToEdit: {},
       categories: [],
       isFiltering: false,
+      isLoading: false,
     }
     this.loadTaskToEdit = this.loadTaskToEdit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -34,27 +35,30 @@ class App extends Component {
   }
 
   async handleSubmit(task, isEditing = false) {
+    this.setState({ isLoading: true })
     if (isEditing) {
       await taskClient.editTask(task);
       const results = await taskClient.getTasks();
-      this.setState({ tasks: results.tasks });
+      this.setState({ tasks: results.tasks, isLoading: false });
     } else {
       await taskClient.addTask(task);
       const results = await taskClient.getTasks();
-      this.setState({ tasks: results.tasks });
+      this.setState({ tasks: results.tasks, isLoading: false });
     }
   }
 
   async handleDelete(id) {
+    this.setState({ isLoading: true })
     await taskClient.deleteTask(id);
     const results = await taskClient.getTasks();
-    this.setState({ tasks: results.tasks });
+    this.setState({ tasks: results.tasks, isLoading: false });
   }
 
   async handleStatusChange(task) {
+    this.setState({ isLoading: true })
     await taskClient.changeStatus(task);
     const results = await taskClient.getTasks();
-    this.setState({ tasks: results.tasks });
+    this.setState({ tasks: results.tasks, isLoading: false });
   }
 
   async filterByCategory(category) {
@@ -66,17 +70,21 @@ class App extends Component {
     return (
       <div className="app-container">
         <h1>Smartsheet To do</h1>
+        <h1 hidden={!this.state.isLoading}>LOADING</h1>
         <AddTask
+          loading={this.state.isLoading}
           edit={this.state.taskToEdit}
           onSubmit={this.handleSubmit}
         />
         <TaskList
+          loading={this.state.isLoading}
           tasks={this.state.tasks}
           edit={this.loadTaskToEdit}
           delete={this.handleDelete}
           changeStatus={this.handleStatusChange}
         />
         <CategoryFilter 
+          loading={this.state.isLoading}
           categories={this.state.categories}
           filter={this.filterByCategory}
         />

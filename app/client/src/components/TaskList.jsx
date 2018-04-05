@@ -37,6 +37,7 @@ class TaskList extends Component {
               edit={this.handleEdit}
               delete={this.handleDelete}
               changeStatus={this.handleStatusChange}
+              loading={this.props.loading}
             />
           </ul>
         )}

@@ -63,21 +63,22 @@ _resetState() {
   }
 
   render() {
+    console.log(this.props.loading);
     return (
       <form onSubmit={this.handleSubmit}>
         <label>
           Add a task here:
-          <input placeholder="Task body"  name="body" type="text" value={this.state.body} onChange={this.handleChange}/>
+          <input disabled={this.props.loading} placeholder="Task body"  name="body" type="text" value={this.state.body} onChange={this.handleChange}/>
         </label>
         <label>
           Category:
-          <input placeholder="*optional" name="category" type="text" value={this.state.category}  onChange={this.handleChange}/>
+          <input disabled={this.props.loading} placeholder="*optional" name="category" type="text" value={this.state.category}  onChange={this.handleChange}/>
         </label>
         <label>
           Due date:
-          <input type="date" name="dueDate" value={this.state.dueDate} onChange={this.handleChange}/>
+          <input disabled={this.props.loading} type="date" name="dueDate" value={this.state.dueDate} onChange={this.handleChange}/>
         </label>
-        <input type="submit" value="Submit"/>
+        <input disabled={this.props.loading} type="submit" value="Submit"/>
       </form>
     );
   }
