@@ -63,7 +63,6 @@ _resetState() {
   }
 
   render() {
-    console.log(this.props.loading);
     return (
       <form onSubmit={this.handleSubmit}>
         <label>
@@ -72,7 +71,7 @@ _resetState() {
         </label>
         <label>
           Category:
-          <input disabled={this.props.loading} placeholder="*optional" name="category" type="text" value={this.state.category}  onChange={this.handleChange}/>
+          <input disabled={this.props.loading} placeholder="Category" name="category" type="text" value={this.state.category}  onChange={this.handleChange}/>
         </label>
         <label>
           Due date:

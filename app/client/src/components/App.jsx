@@ -12,7 +12,6 @@ class App extends Component {
       tasks: [],
       taskToEdit: {},
       categories: [],
-      isFiltering: false,
       isLoading: false,
     }
     this.loadTaskToEdit = this.loadTaskToEdit.bind(this);
@@ -20,13 +19,14 @@ class App extends Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
     this.filterByCategory = this.filterByCategory.bind(this);
+    this.clearFilter = this.clearFilter.bind(this);
   }
 
   async componentWillMount() {
+    this.setState({ isLoading: true });
     const results = await taskClient.getTasks();
     const categories = results.tasks.map(task => task.category).filter((item, index, inputArray) => inputArray.indexOf(item) == index);
-    console.log(categories);
-    this.setState({ tasks: results.tasks, categories });
+    this.setState({ tasks: results.tasks, isLoading: false, categories });
   }
 
 
@@ -35,42 +35,51 @@ class App extends Component {
   }
 
   async handleSubmit(task, isEditing = false) {
-    this.setState({ isLoading: true })
+    this.setState({ isLoading: true });
     if (isEditing) {
       await taskClient.editTask(task);
       const results = await taskClient.getTasks();
-      this.setState({ tasks: results.tasks, isLoading: false });
+      const categories = results.tasks.map(task => task.category).filter((item, index, inputArray) => inputArray.indexOf(item) == index);
+      this.setState({ tasks: results.tasks, isLoading: false, categories });
     } else {
       await taskClient.addTask(task);
       const results = await taskClient.getTasks();
-      this.setState({ tasks: results.tasks, isLoading: false });
+      const categories = results.tasks.map(task => task.category).filter((item, index, inputArray) => inputArray.indexOf(item) == index);
+      this.setState({ tasks: results.tasks, isLoading: false, categories });
     }
   }
 
   async handleDelete(id) {
-    this.setState({ isLoading: true })
+    this.setState({ isLoading: true });
     await taskClient.deleteTask(id);
     const results = await taskClient.getTasks();
-    this.setState({ tasks: results.tasks, isLoading: false });
+    const categories = results.tasks.map(task => task.category).filter((item, index, inputArray) => inputArray.indexOf(item) == index);
+    this.setState({ tasks: results.tasks, isLoading: false, categories });
   }
 
   async handleStatusChange(task) {
-    this.setState({ isLoading: true })
+    this.setState({ isLoading: true });
     await taskClient.changeStatus(task);
     const results = await taskClient.getTasks();
     this.setState({ tasks: results.tasks, isLoading: false });
   }
 
   async filterByCategory(category) {
+    this.setState({ isLoading: true });
     const results = await taskClient.getTasksByCategory(category);
-    this.setState({ tasks: results.tasks, isFiltering: true });
+    this.setState({ tasks: results.tasks, isLoading: false });
+  }
+
+  async clearFilter() {
+    this.setState({ isLoading: true });
+    const results = await taskClient.getTasks();
+    this.setState({ tasks: results.tasks, isLoading: false });
   }
 
   render() {
     return (
       <div className="app-container">
         <h1>Smartsheet To do</h1>
-        <h1 hidden={!this.state.isLoading}>LOADING</h1>
         <AddTask
           loading={this.state.isLoading}
           edit={this.state.taskToEdit}
@@ -87,7 +96,10 @@ class App extends Component {
           loading={this.state.isLoading}
           categories={this.state.categories}
           filter={this.filterByCategory}
+          loading={this.state.isLoading}
+          clear={this.clearFilter}
         />
+        <h1 hidden={!this.state.isLoading}>LOADING....</h1>
       </div>
     );
   }
