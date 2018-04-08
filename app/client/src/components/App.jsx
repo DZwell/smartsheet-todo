@@ -22,10 +22,18 @@ class App extends Component {
     this.clearFilter = this.clearFilter.bind(this);
   }
 
+/**
+ * Returns list of task categories minus duplicates and empty category fields
+ * {Array} tasks
+ */
+_buildCategoriesList = (tasks) => {
+  return tasks.map(task => task.category).filter((item, index, inputArray) => inputArray.indexOf(item) === index && item !== undefined);
+}
+
   async componentWillMount() {
     this.setState({ isLoading: true });
     const results = await taskClient.getTasks();
-    const categories = results.tasks.map(task => task.category).filter((item, index, inputArray) => inputArray.indexOf(item) == index);
+    const categories = this._buildCategoriesList(results.tasks);
     this.setState({ tasks: results.tasks, isLoading: false, categories });
   }
 
@@ -39,12 +47,12 @@ class App extends Component {
     if (isEditing) {
       await taskClient.editTask(task);
       const results = await taskClient.getTasks();
-      const categories = results.tasks.map(task => task.category).filter((item, index, inputArray) => inputArray.indexOf(item) == index);
+      const categories = this._buildCategoriesList(results.tasks);
       this.setState({ tasks: results.tasks, isLoading: false, categories });
     } else {
       await taskClient.addTask(task);
       const results = await taskClient.getTasks();
-      const categories = results.tasks.map(task => task.category).filter((item, index, inputArray) => inputArray.indexOf(item) == index);
+      const categories = this._buildCategoriesList(results.tasks);
       this.setState({ tasks: results.tasks, isLoading: false, categories });
     }
   }
@@ -53,7 +61,7 @@ class App extends Component {
     this.setState({ isLoading: true });
     await taskClient.deleteTask(id);
     const results = await taskClient.getTasks();
-    const categories = results.tasks.map(task => task.category).filter((item, index, inputArray) => inputArray.indexOf(item) == index);
+    const categories = this._buildCategoriesList(results.tasks);
     this.setState({ tasks: results.tasks, isLoading: false, categories });
   }
 
@@ -93,7 +101,6 @@ class App extends Component {
           changeStatus={this.handleStatusChange}
         />
         <CategoryFilter 
-          loading={this.state.isLoading}
           categories={this.state.categories}
           filter={this.filterByCategory}
           loading={this.state.isLoading}

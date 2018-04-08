@@ -32,6 +32,7 @@ class TaskList extends Component {
             <th>Status</th>
             <th>Due Date</th>
             <th>Category</th>
+            <th>**</th>
           </tr>
         </thead>
         <tbody>

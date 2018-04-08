@@ -71,7 +71,7 @@ _resetState() {
         </label>
         <label>
           Category:
-          <input disabled={this.props.loading} placeholder="Category" name="category" type="text" value={this.state.category}  onChange={this.handleChange}/>
+          <input disabled={this.props.loading} placeholder="Category" name="category" type="text" value={this.state.category} onChange={this.handleChange}/>
         </label>
         <label>
           Due date:
