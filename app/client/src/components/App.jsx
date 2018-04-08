@@ -22,13 +22,13 @@ class App extends Component {
     this.clearFilter = this.clearFilter.bind(this);
   }
 
-/**
- * Returns list of task categories minus duplicates and empty category fields
- * {Array} tasks
- */
-_buildCategoriesList = (tasks) => {
-  return tasks.map(task => task.category).filter((item, index, inputArray) => inputArray.indexOf(item) === index && item !== undefined);
-}
+  /**
+   * Returns list of task categories minus duplicates and empty category fields
+   * {Array} tasks
+   */
+  _buildCategoriesList = (tasks) => {
+    return tasks.map(task => task.category).filter((item, index, inputArray) => inputArray.indexOf(item) === index && item !== undefined);
+  }
 
   async componentWillMount() {
     this.setState({ isLoading: true });
@@ -100,7 +100,7 @@ _buildCategoriesList = (tasks) => {
           delete={this.handleDelete}
           changeStatus={this.handleStatusChange}
         />
-        <CategoryFilter 
+        <CategoryFilter
           categories={this.state.categories}
           filter={this.filterByCategory}
           loading={this.state.isLoading}
