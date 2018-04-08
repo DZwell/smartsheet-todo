@@ -21,10 +21,14 @@ class Task extends Component {
 
     const status = this.props.completed ? 'Done' : 'Not done';
 
+    // Change date format so month comes first e.g 01/01/2001
+    const dateArray = this.props.dueDate.split('-');
+    const monthFirstDateString = `${dateArray[1]}-${dateArray[2]}-${dateArray[0]}`;
+
     return (
       <tr>
         <td>
-          <input type="checkbox" onChange={() => this.handleStatusChange(this.props)} defaultChecked={this.props.completed}></input>
+          <input disabled={this.props.loading} type="checkbox" onChange={() => this.handleStatusChange(this.props)} defaultChecked={this.props.completed}></input>
         </td>
         <td>
           {this.props.body}
@@ -33,7 +37,10 @@ class Task extends Component {
           {status}
         </td>
         <td>
-          {this.props.dueDate}
+          {monthFirstDateString}
+        </td>
+        <td>
+          {this.props.category}
         </td>
         <td>
           <button className="delete" disabled={this.props.loading} onClick={() => this.handleDelete(this.props.id)}>Delete</button>
