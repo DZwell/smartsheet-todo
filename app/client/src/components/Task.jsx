@@ -18,12 +18,14 @@ class Task extends Component {
   }
 
   render() {
-
+    let monthFirstDateString;
     const status = this.props.completed ? 'Done' : 'Not done';
 
-    // Change date format so month comes first e.g 04/013/2001
-    const dateArray = this.props.dueDate.split('-');
-    const monthFirstDateString = `${dateArray[1]}-${dateArray[2]}-${dateArray[0]}`;
+    if (this.props.dueDate) {
+      // Change date format so month comes first e.g 04/013/2001
+      const dateArray = this.props.dueDate.split('-');
+      monthFirstDateString = `${dateArray[1]}-${dateArray[2]}-${dateArray[0]}`;
+    }
 
     return (
       <tr>
@@ -37,7 +39,7 @@ class Task extends Component {
           {status}
         </td>
         <td>
-          {monthFirstDateString}
+          {!monthFirstDateString ? this.props.dueDate : monthFirstDateString}
         </td>
         <td>
           {this.props.category}
