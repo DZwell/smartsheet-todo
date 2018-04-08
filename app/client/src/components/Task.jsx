@@ -21,7 +21,7 @@ class Task extends Component {
 
     const status = this.props.completed ? 'Done' : 'Not done';
 
-    // Change date format so month comes first e.g 01/01/2001
+    // Change date format so month comes first e.g 04/013/2001
     const dateArray = this.props.dueDate.split('-');
     const monthFirstDateString = `${dateArray[1]}-${dateArray[2]}-${dateArray[0]}`;
 
