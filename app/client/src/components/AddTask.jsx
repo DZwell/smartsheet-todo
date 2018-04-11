@@ -67,7 +67,7 @@ class AddTask extends Component {
       <form onSubmit={this.handleSubmit}>
         <label>
           Add a task here:
-          <input disabled={this.props.loading} placeholder="Task body" name="body" type="text" value={this.state.body} onChange={this.handleChange} />
+          <input required disabled={this.props.loading} placeholder="Task body" name="body" type="text" value={this.state.body} onChange={this.handleChange} />
         </label>
         <label>
           Category:
@@ -75,7 +75,7 @@ class AddTask extends Component {
         </label>
         <label>
           Due date:
-          <input disabled={this.props.loading} type="date" name="dueDate" value={this.state.dueDate} onChange={this.handleChange} />
+          <input required disabled={this.props.loading} type="date" name="dueDate" value={this.state.dueDate} onChange={this.handleChange} />
         </label>
         <input disabled={this.props.loading} type="submit" value="Submit" />
       </form>
