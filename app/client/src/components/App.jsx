@@ -32,7 +32,7 @@ class App extends Component {
 
   async componentWillMount() {
     this.setState({ isLoading: true });
-    const results = await taskClient.getTasks();
+    const results = await taskClient.sendRequest('GET', null, null);
     const categories = this._buildCategoriesList(results.tasks);
     this.setState({ tasks: results.tasks, isLoading: false, categories });
   }
@@ -45,13 +45,13 @@ class App extends Component {
   async handleSubmit(task, isEditing = false) {
     this.setState({ isLoading: true });
     if (isEditing) {
-      await taskClient.editTask(task);
-      const results = await taskClient.getTasks();
+      await taskClient.sendRequest('PUT', task, task.id);
+      const results = await taskClient.sendRequest('GET', null, null);
       const categories = this._buildCategoriesList(results.tasks);
       this.setState({ tasks: results.tasks, isLoading: false, categories });
     } else {
-      await taskClient.addTask(task);
-      const results = await taskClient.getTasks();
+      await taskClient.sendRequest('POST', task, null);
+      const results = await taskClient.sendRequest('GET', null, null);
       const categories = this._buildCategoriesList(results.tasks);
       this.setState({ tasks: results.tasks, isLoading: false, categories });
     }
@@ -59,28 +59,28 @@ class App extends Component {
 
   async handleDelete(id) {
     this.setState({ isLoading: true });
-    await taskClient.deleteTask(id);
-    const results = await taskClient.getTasks();
+    await taskClient.sendRequest('DELETE', null, id);
+    const results = await taskClient.sendRequest('GET', null, null);
     const categories = this._buildCategoriesList(results.tasks);
     this.setState({ tasks: results.tasks, isLoading: false, categories });
   }
 
   async handleStatusChange(task) {
     this.setState({ isLoading: true });
-    await taskClient.changeStatus(task);
-    const results = await taskClient.getTasks();
+    await taskClient.sendRequest('PUT', task, task.id);
+    const results = await taskClient.sendRequest('GET', null, null);
     this.setState({ tasks: results.tasks, isLoading: false });
   }
 
   async filterByCategory(category) {
     this.setState({ isLoading: true });
-    const results = await taskClient.getTasksByCategory(category);
+    const results = await taskClient.sendRequest('GET', null, category);
     this.setState({ tasks: results.tasks, isLoading: false });
   }
 
   async clearFilter() {
     this.setState({ isLoading: true });
-    const results = await taskClient.getTasks();
+    const results = await taskClient.sendRequest('GET', null, null);
     this.setState({ tasks: results.tasks, isLoading: false });
   }
 
