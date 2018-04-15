@@ -2,115 +2,37 @@ import 'whatwg-fetch';
 
 class TaskClient {
   /**
-   * Get all tasks
+   * Sends a request to server and returns response body
+   * @param {String} method
+   * @param {Object} requestBody
+   * @param {String} param
    */
-  async getTasks() {
-    const response = await fetch('/api/tasks');
-    const body = await response.json();
+  async sendRequest(method, requestBody, param) {
+    let url;
+    let response;
 
-    if (response.status !== 200) {
-      throw Error(body.message);
+    if (param) {
+      url = `/api/tasks/${param}`;
+    } else {
+      url = '/api/tasks';
     }
 
-    return body;
-  }
-
-  /**
-   * Delete a task
-   * @param {Number} id
-   */
-  async deleteTask(id) {
-    const response = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
-    const body = await response.json();
-
-    if (response.status !== 200) {
-      throw Error(body.message);
-    }
-
-    return body;
-  }
-
-  /**
-   * Change the status of a task
-   * @param {Object} task
-   */
-  async changeStatus(task) {
-    const response = await fetch(`/api/tasks/${task.id}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify(task),
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json',
+    if (requestBody) {
+      response = await fetch(
+        url,
+        {
+          method,
+          body: JSON.stringify(requestBody),
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json',
+          },
         },
-      },
-    );
-
-    const body = await response.json();
-
-    if (response.status !== 200) {
-      throw Error(body.message);
+      );
+    } else {
+      response = await fetch(url, { method });
     }
 
-    return body;
-  }
-
-  /**
-   * Add a task
-   * @param {Number} id
-   */
-  async addTask(task) {
-    const response = await fetch('/api/tasks',
-      {
-        method: 'POST',
-        body: JSON.stringify(task),
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-
-    const body = await response.json();
-
-    if (response.status !== 200) {
-      throw Error(body.message);
-    }
-
-    return body;
-  }
-
-  /**
-   * Edit a task
-   * @param {Number} id
-   */
-  async editTask(task) {
-    const response = await fetch(`/api/tasks/${task.id}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify(task),
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-
-    const body = await response.json();
-
-    if (response.status !== 200) {
-      throw Error(body.message);
-    }
-
-    return body;
-  }
-
-  /**
-   * Get tasks by category
-   * @param {String} category
-   */
-  async getTasksByCategory(category) {
-    const response = await fetch(`/api/tasks/${category}`);
     const body = await response.json();
 
     if (response.status !== 200) {
